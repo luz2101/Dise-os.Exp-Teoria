@@ -1,0 +1,14 @@
+#Prueba de esfericidad
+
+H0:Existe esfericidad
+H1:No existe esfericidad 
+
+library(rstatix)
+
+esf<- anova_test(data = datos, dv =vd, wid = niño, within = mes)
+esf
+
+Interpretacion:
+Existen diferencias significativas entre la inteligencia de los niños en el mes 30,
+la inteligencia de los niños en el mes 36,la inteligencia de los niños en el mes 42 y
+ la inteligencia de los niños en el mes 48.
