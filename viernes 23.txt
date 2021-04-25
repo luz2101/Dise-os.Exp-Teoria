@@ -1,0 +1,79 @@
+#repetidas con un factor
+
+datos<-read.delim('clipboard')
+names(datos)
+mes<-as.factor(datos$mes)
+niño<-as.factor(datos$niño)
+vd<-datos$vd
+library(psych)
+boxplot(datos$vd~datos$mes)
+ri<-rstandard(mod)
+shapiro.test(ri)
+#Normalidad(manera 1)
+by(datos$vd,datos$mes,shapiro.test)
+#Normalidad(manera 2)
+shapiro.test(datos$vd[datos$mes == "30"] ) 
+shapiro.test(datos$vd[datos$mes == "36"] ) 
+shapiro.test(datos$vd[datos$mes == "42"] ) 
+shapiro.test(datos$vd[datos$mes == "48"] ) 
+
+#Prueba de esfericidad
+
+#H0:Existe esfericidad
+#H1:No existe esfericidad 
+install.packages('rstatix')
+library(rstatix)
+
+esf<- anova_test(data = datos, dv =vd, wid = niño, within = mes)
+esf
+
+#Interpretacion:
+#  Existen diferencias significativas entre la inteligencia de los niños en el mes 30,
+#la inteligencia de los niños en el mes 36,la inteligencia de los niños en el mes 42 y
+#la inteligencia de los niños en el mes 48.
+mod<-lm(vd~mes)
+
+anva<-anova(mod)
+anva
+install.packages('multcomp')
+library(multcomp)
+pk<-glht(mod,linfct=mcp(mes ="Tukey"))
+summary(pk)
+kruskal.test(vd ~ mes)
+pairwise.t.test( datos$vd, datos$mes, 
+                 p.adj = "bonferroni")
+##repetidas 2 factores
+datos<-read.delim('clipboard')
+datos
+str(datos)
+densidad<-as.factor(datos$densidad)
+dia<-as.factor(datos$dia)
+humedad<-as.factor(datos$humedad)
+unidad<-as.factor(datos$unidad)
+rendimiento<-datos$rendimiento
+mod<-lm(rendimiento~densidad+humedad+dia)
+
+ri<-rstandard(mod)
+shapiro.test(ri)
+library(psych)
+
+by(datos$rendimiento,datos$dia,shapiro.test)
+install.packages("car")
+library(car)
+
+ncvTest(mod)
+
+anva<-anova(mod)
+anva
+
+
+rm.aov<-Anova(mod)
+summary(mod)
+
+pk<-glht(mod,linfct=mcp(dia ="Tukey"))
+summary(pk)
+
+kruskal.test(rendimiento~dia)
+
+pairwise.t.test( rendimiento, dia, 
+                 p.adj = "bonferroni")
